@@ -1,5 +1,3 @@
-To begin run main.py
-
 # GravitySim 
 
 GravitySim is a simple Physics Simulator that shows gravity's effect in different mediums and environments built using the Pygame library. The objective of the project is to control the balls and observe the motion on the ground or a medium.
