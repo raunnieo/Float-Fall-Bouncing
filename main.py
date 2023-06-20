@@ -123,7 +123,7 @@ while True:
                 if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > 515 and back == 0):
                     i.v_y = -random.randint(10, 20)
                 if event.key == pygame.K_SPACE and (abs(i.v_y)<=1 and back == 1):
-                    i.v_y = -random.randint(6, 20)
+                    i.v_y = -random.randint(6, 10)
                 if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > 490 and back == 2):
                     i.v_y = -random.randint(6, 9)
              #Adding new balls
@@ -229,4 +229,4 @@ while True:
                     i.v_y = -i.v_y*i.e
 
     pygame.display.update() #To update screen by showing newly blit surfaces
-    clock.tick(20) #Adds delay of 20ms
+    clock.tick(30) #Adds delay of 20ms
