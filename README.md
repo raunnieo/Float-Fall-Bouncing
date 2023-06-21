@@ -40,14 +40,14 @@ pip install pygame
 - `vectors.py`: Provides a function to display velocity vectors for the balls.
 - `graphics/`: Directory containing various graphics assets used in the project.
 
-## Project summary:
+## Project summary
 This project demonstrates bouncing balls in different environments. The user can control the movement of the balls,
 make them jump, and add or remove balls. There are three environments: ground, water, and moon. Each environment
 has its own gravity setting. The project uses the Pygame library for graphics.
 
 ## Credits
 - Project by: Raunak Mandil
-- Version: 1.0
+- Version: 2.0
 
 
 
