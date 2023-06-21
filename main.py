@@ -10,14 +10,14 @@ pygame.init()
 
 #Screen Setup
 window_height = 650
-window_width = 1000
-screen = pygame.display.set_mode((window_width, window_height)) #Makes a window
+window_width = 1259
+screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE) #Makes a window
 pygame.display.set_caption('GravitySim') #Sets the name of the window
 clock = pygame.time.Clock() #To add time delay in game loop
 
 #Making required surfaces
 bg_surface = pygame.image.load('graphics/bg/bg.png').convert()
-bg_grd = pygame.image.load('graphics/bg/bground.png').convert()
+bg_grd = pygame.image.load('graphics/bg/bground.png').convert_alpha()
 bg_water = pygame.image.load('graphics/water/water.png').convert()
 bg_moon = pygame.image.load('graphics/moon/moonsky.png').convert()
 bg_moongrd = pygame.image.load('graphics/moon/moongrd.png').convert_alpha()
@@ -31,7 +31,7 @@ class Ball:
     def __init__(self, x, y, g):
         self.x = x
         self.y = y
-        self.e = 0.7 #Coefficient of restitution
+        self.e = 0.6 #Coefficient of restitution
         self.g = g
         self.gNet = g
         self.v_x = 0
@@ -58,7 +58,8 @@ class Ball:
             self.y = self.ball_rect.bottom #the update coordinates are stored in y value
             if self.y < 0:
                 self.remove_ball()
-
+    def replot_x(self,scale):
+        self.ball_rect.left *= scale
     def remove_ball(self):
         if len(Ball.balls)>0:
             Ball.balls.remove(self) #Remove ball from the balls list in Ball class
@@ -88,11 +89,10 @@ class Ball:
 #Turning on and off Interactive Mode
 interactive = False
 curr_ball = None
-ball1 = Ball(500, 520, 10) #Creating a Ball object
+ball1 = Ball(window_width//2, window_height-130, 10) #Creating a Ball object
 back = 0 #To count current scene
 back_dict = {0:10, 1:1, 2:1.6} #Stores value of acceleration due to gravitation force.
 #In back_dict the value for key = 1 is density of the medium rather than acceleration value
-bottomline = 520 #To set the collision point
 c_pressed = False #To check if c key is pressed.
 
 #Font generation
@@ -105,8 +105,26 @@ while loadScreen.load_screen(screen):
 while loadScreen.loading(screen):
     continue
 
+size = screen.get_size()
+scale = round(size[1]/window_height, 2)
+bottomline = window_height-130*scale #To set the collision point
+
+if size[0]!=window_width:
+    bg_surface = pygame.transform.scale_by(bg_surface, scale)
+    bg_grd = pygame.transform.scale_by(bg_grd, scale)
+    bg_water = pygame.transform.scale_by(bg_water, scale)
+    bg_moon = pygame.transform.scale_by(bg_moon, scale)
+    bg_moongrd = pygame.transform.scale_by(bg_moongrd, scale)
+    midscene = pygame.transform.scale_by(midscene, scale)
+    for i in Ball.balls:
+        i.replot_x(scale)
+    window_height = size[1]
+    window_width = size[0]
+    screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+
 #Main loop
 while True:
+
     #Rendering the text to show density of the medium
     add_surface = text_font.render(f'Density of medium = {(round(back_dict[1], 2))}', None, 'Black')
     add_rect = add_surface.get_rect(topleft = (25,25))
@@ -117,24 +135,39 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        elif event.type == pygame.VIDEORESIZE:
+            scale = round(event.h/window_height, 2)
+            for i in Ball.balls:
+                i.replot_x(scale)
+            window_height = event.h
+            window_width = event.w
+            screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
+            print(scale)
+            bg_surface = pygame.transform.scale_by(bg_surface, scale)
+            bg_grd = pygame.transform.scale_by(bg_grd, scale)
+            bg_water = pygame.transform.scale_by(bg_water, scale)
+            bg_moon = pygame.transform.scale_by(bg_moon, scale)
+            bg_moongrd = pygame.transform.scale_by(bg_moongrd, scale)
+            midscene = pygame.transform.scale_by(midscene, scale)
+            
         elif event.type == pygame.KEYDOWN:
              #Changing the y velocity of ball when Space key is pressed
              for i in Ball.balls:
-                if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > 515 and back == 0):
+                if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > window_height-round(135*scale) and back == 0):
                     i.v_y = -random.randint(10, 20)
                 if event.key == pygame.K_SPACE and (abs(i.v_y)<=1 and back == 1):
                     i.v_y = -random.randint(6, 10)
-                if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > 490 and back == 2):
+                if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > window_height-round(160*scale) and back == 2):
                     i.v_y = -random.randint(6, 9)
              #Adding new balls
              if event.key == pygame.K_a and len(Ball.balls)<3 : #Limits the maximum number of balls to 3
                 #Adding balls at different position depending on the scene
                 if back == 0:
-                    ball = Ball(random.randint(50, 900), 520, 10)
+                    ball = Ball(random.randint(50, 900), bottomline, 10)
                 elif back == 1:
-                    ball = Ball(random.randint(50, 900), 650, 10)
+                    ball = Ball(random.randint(50, 900), bottomline, 10)
                 else:
-                    ball = ball = Ball(random.randint(50, 900), 495, 10)
+                    ball = ball = Ball(random.randint(50, 900), bottomline, 10)
              #Removing balls based on FIFO (First-in-first-out)
              elif event.key == pygame.K_r:
                     if len(Ball.balls)>0:
@@ -188,10 +221,10 @@ while True:
                 for i in Ball.balls:
                         dragger = dragger and i.dragging
                 if not dragger or len(Ball.balls) == 0:
-                    if 50<=event.pos[0]<=950 and 50<=event.pos[1]<=bottomline-50:
+                    if 50<=event.pos[0]<=window_width-50 and 50<=event.pos[1]<=bottomline-50:
                         ball = Ball(event.pos[0], event.pos[1], 10)
 
-    screen.blit(bg_surface, (0,-100)) #Adds the background on the screen
+    screen.blit(bg_surface, (0,0)) #Adds the background on the screen
 
     if c_pressed: #If c_pressed == True all the balls are removed and "Press Enter is shown"
         for i in Ball.balls:
@@ -204,17 +237,17 @@ while True:
         if back == 1:
             screen.blit(bg_water, (0,0))
             screen.blit(add_surface, add_rect)
-            bottomline = 650
+            bottomline = window_height
         elif back == 0:
-            screen.blit(bg_surface, (0,-100))
-            screen.blit(bg_grd, (0, 480))
-            bottomline = 520
+            screen.blit(bg_surface, (0,0))
+            screen.blit(bg_grd, (0, 0))
+            bottomline = window_height- round(130*scale)
         elif back == 2:
             screen.blit(bg_moon, (0,0))
             screen.blit(bg_moongrd, (0,0))
-            bottomline = 495
+            bottomline = window_height-round(155*scale)
 
-        screen.blit(legend, (850,0)) #To add legends on screen
+        screen.blit(legend, (window_width-150, 0)) #To add legends on screen
 
     #Basic Physics and mechanics
     for i in Ball.balls:
@@ -229,4 +262,4 @@ while True:
                     i.v_y = -i.v_y*i.e
 
     pygame.display.update() #To update screen by showing newly blit surfaces
-    clock.tick(30) #Adds delay of 20ms
+    clock.tick(30) #Adds delay of 30ms
