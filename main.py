@@ -94,6 +94,7 @@ back = 0 #To count current scene
 back_dict = {0:10, 1:1, 2:1.6} #Stores value of acceleration due to gravitation force.
 #In back_dict the value for key = 1 is density of the medium rather than acceleration value
 c_pressed = False #To check if c key is pressed.
+mousebutton = False
 
 #Font generation
 text_font = pygame.font.Font("graphics/font/gooddog-plain.regular.ttf",40)
@@ -167,7 +168,7 @@ while True:
                 elif back == 1:
                     ball = Ball(random.randint(50, 900), bottomline, 10)
                 else:
-                    ball = ball = Ball(random.randint(50, 900), bottomline, 10)
+                    ball = Ball(random.randint(50, 900), 0, 10)
              #Removing balls based on FIFO (First-in-first-out)
              elif event.key == pygame.K_r:
                     if len(Ball.balls)>0:
@@ -195,27 +196,23 @@ while True:
             
              #Code for interactive mode
              if event.key == pygame.K_i:
-                 if interactive:
-                     interactive = False
-                 else:
-                     interactive = True
+                 interactive = not interactive
 
         elif event.type == pygame.MOUSEBUTTONDOWN and interactive:
+             mousebutton = True
              for i in Ball.balls:
                   if i.ball_rect.collidepoint(event.pos):
                        i.dragging = True
                        curr_ball = i
 
         elif event.type == pygame.MOUSEBUTTONUP or interactive == False:
+            
              for i in Ball.balls:
                   i.dragging = False
-
+             mousebutton = False
+             curr_ball = None
+   
         if interactive:
-            for i in Ball.balls:
-                if i.dragging:
-                    curr_ball.ball_rect.center = pygame.mouse.get_pos()
-                    curr_ball.v_y = 0
-                
             if event.type == pygame.MOUSEBUTTONDOWN and len(Ball.balls) < 3:
                 dragger = True
                 for i in Ball.balls:
@@ -223,6 +220,10 @@ while True:
                 if not dragger or len(Ball.balls) == 0:
                     if 50<=event.pos[0]<=window_width-50 and 50<=event.pos[1]<=bottomline-50:
                         ball = Ball(event.pos[0], event.pos[1], 10)
+    if interactive:
+        if mousebutton and curr_ball != None:
+            curr_ball.ball_rect.center = pygame.mouse.get_pos()
+            curr_ball.v_y = 0
 
     screen.blit(bg_surface, (0,0)) #Adds the background on the screen
 
