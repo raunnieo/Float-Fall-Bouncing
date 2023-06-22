@@ -9,8 +9,12 @@ clock = pygame.time.Clock()
 window_height = 650
 window_width = 1259
 screen = pygame.display.set_mode((window_width,window_height), pygame.RESIZABLE)
+screen.fill("Black")
+clock.tick(1)
 
 resize = [False, 0, 0]
+
+loader = [1, 9, 27, 5, 0]
 
 def load_screen(screen):
     """
@@ -63,6 +67,7 @@ def loading(screen):
         bool: True if the loading animation should continue, False if it should stop.
     """
     global window_height
+    global loader
     bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
     surface  = pygame.image.load('graphics/Scenes/lo1.png').convert()
     surface2  = pygame.image.load('graphics/Scenes/lo2.png').convert_alpha()
@@ -71,8 +76,19 @@ def loading(screen):
         surface2 = pygame.transform.scale_by(surface2, resize[1]/resize[2])
         bar = pygame.transform.scale_by(bar, resize[1]/resize[2])
 
-    if barRect.right <= 1259:
-        barRect.right += random.randint(0,10)
+    if barRect.right>1133:
+        loader[4]=loader[3]
+    elif barRect.right>378:
+        loader[4]=loader[2]
+    elif barRect.right>315:
+        loader[4]=loader[1]
+    elif barRect.right>126:
+        loader[4]=loader[0]
+    else:
+        loader[4] = 200
+
+    if barRect.right<=1259:
+        barRect.right += 0.5*loader[4]
     else:
         return False
 
@@ -87,7 +103,6 @@ def loading(screen):
             window_width = event.w
             resize[0] = not resize[0]
 
-            # screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
     screen.blit(surface, (0,0))
     screen.blit(bar, barRect.topleft)
     screen.blit(surface2, (0,0))
