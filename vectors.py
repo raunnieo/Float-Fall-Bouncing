@@ -5,7 +5,7 @@ from math import sqrt
 pygame.init()
 
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((1000,650))
+screen = pygame.display.set_mode((1000,650), pygame.FULLSCREEN)
 text_font = pygame.font.Font(None ,50)
 
 net_color = "White"
