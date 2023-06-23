@@ -8,12 +8,9 @@ clock = pygame.time.Clock()
 
 window_height = 650
 window_width = 1259
-screen = pygame.display.set_mode((window_width,window_height), pygame.RESIZABLE)
+screen = pygame.display.set_mode((window_width,window_height), pygame.FULLSCREEN)
 screen.fill("Black")
 clock.tick(1)
-
-resize = [False, 0, 0]
-
 loader = [1, 9, 27, 5, 0]
 
 def load_screen(screen):
@@ -30,9 +27,6 @@ def load_screen(screen):
     global window_width
     global resize
     surface  = pygame.image.load('graphics/Scenes/lo1.png').convert()
-        
-    if resize[0] == True:
-            surface= pygame.transform.scale_by(surface, resize[1]/resize[2])
     screen.blit(surface, (0,0))
     
     clock.tick(5)
@@ -42,12 +36,6 @@ def load_screen(screen):
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        elif event.type == pygame.VIDEORESIZE:
-            resize[1]=event.h
-            resize[2]=window_height
-            window_height = event.h
-            window_width = event.w
-            resize[0] = not resize[0]
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_k:
@@ -71,10 +59,7 @@ def loading(screen):
     bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
     surface  = pygame.image.load('graphics/Scenes/lo1.png').convert()
     surface2  = pygame.image.load('graphics/Scenes/lo2.png').convert_alpha()
-    if resize[0] == True:
-        surface  = pygame.transform.scale_by(surface, resize[1]/resize[2])
-        surface2 = pygame.transform.scale_by(surface2, resize[1]/resize[2])
-        bar = pygame.transform.scale_by(bar, resize[1]/resize[2])
+
 
     if barRect.right>1133:
         loader[4]=loader[3]
@@ -96,12 +81,6 @@ def loading(screen):
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        elif event.type == pygame.VIDEORESIZE:
-            resize[1]=event.h
-            resize[2]=window_height
-            window_height = event.h
-            window_width = event.w
-            resize[0] = not resize[0]
 
     screen.blit(surface, (0,0))
     screen.blit(bar, barRect.topleft)
