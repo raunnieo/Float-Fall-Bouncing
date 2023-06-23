@@ -37,10 +37,7 @@ def load_screen(screen):
             pygame.quit()
             exit()
 
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_k:
-                return False
-    return True
+    return False
 
 bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
 barRect = bar.get_rect(topright = (0,0))
