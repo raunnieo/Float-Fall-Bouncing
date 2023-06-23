@@ -11,8 +11,8 @@ pygame.init()
 #Screen Setup
 window_height = 650
 window_width = 1259
-screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE) #Makes a window
-pygame.display.set_caption('GravitySim') #Sets the name of the window
+screen = pygame.display.set_mode((window_width, window_height), pygame.FULLSCREEN) #Makes a window
+pygame.display.set_caption('Float Ball Bouncing') #Sets the name of the window
 clock = pygame.time.Clock() #To add time delay in game loop
 
 #Making required surfaces
@@ -121,7 +121,7 @@ if size[0]!=window_width:
         i.replot_x(scale)
     window_height = size[1]
     window_width = size[0]
-    screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 
 #Main loop
 while True:
