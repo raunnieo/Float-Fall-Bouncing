@@ -43,8 +43,8 @@ def load_screen(screen):
             pygame.quit()
             exit()
         elif event.type == pygame.VIDEORESIZE:
-            resize[1]=event.h
-            resize[2]=window_height
+            resize[1]=event.w
+            resize[2]=window_width
             window_height = event.h
             window_width = event.w
             resize[0] = not resize[0]
@@ -63,7 +63,7 @@ def loading(screen):
     Returns:
         bool: True if the loading animation should continue, False if it should stop.
     """
-    global window_height
+    global window_width
     global loader
     bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
     surface  = pygame.image.load('graphics/Scenes/lo1.png').convert()
@@ -94,8 +94,8 @@ def loading(screen):
             pygame.quit()
             exit()
         elif event.type == pygame.VIDEORESIZE:
-            resize[1]=event.h
-            resize[2]=window_height
+            resize[1]=event.w
+            resize[2]=window_width
             window_height = event.h
             window_width = event.w
             resize[0] = not resize[0]

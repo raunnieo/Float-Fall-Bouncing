@@ -4,6 +4,7 @@ from sys import exit #To close the window
 import random #To genrate random variables
 import loadScreen
 import vectors
+import menu
 
 #Initializing PyGame
 pygame.init()
@@ -14,7 +15,9 @@ window_width = 1410
 screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE) #Makes a window
 pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
 clock = pygame.time.Clock() #To add time delay in game loop
+show_load = True
 
+output = {"Menu": False, "Ball":1}
 #Making required surfaces
 bg_surface = pygame.image.load('graphics/bg/bg.png').convert()
 bg_grd = pygame.image.load('graphics/bg/bground.png').convert_alpha()
@@ -28,10 +31,11 @@ legend = pygame.image.load(('graphics/Scenes/legends.png')).convert_alpha()
 class Ball:
     t=0.1
     balls = []
-    def __init__(self, x, y, g):
+    def __init__(self, x, y, g, type):
         self.x = x
         self.y = y
-        self.e = 0.6 #Coefficient of restitution
+        self.type = type
+        self.e = 0.7*(1 + (self.type-1)*0.1) #Coefficient of restitution
         self.g = g
         self.gNet = g
         self.v_x = 0
@@ -40,7 +44,7 @@ class Ball:
         self.density = 1
         self.volume = 0.08
         self.mass = self.density*self.volume
-        self.ball_surface = pygame.image.load('graphics/ball/1.png').convert_alpha()
+        self.ball_surface = pygame.image.load(f'graphics/ball/{self.type}.png').convert_alpha()
         self.ball_rect = self.ball_surface.get_rect(midbottom = (self.x,self.y))
         self.dragging = False
         
@@ -52,7 +56,7 @@ class Ball:
          self.v_y += -self.v_y*self.f
 
     def update_position(self):
-            disp_y = (self.v_y*Ball.t+0.5*(self.gNet)*Ball.t**2)*20  #s = ut + 0.5at**2
+            disp_y = (self.v_y*Ball.t+0.5*(self.gNet)*Ball.t**2)*10  #s = ut + 0.5at**2
             self.v_y += (self.gNet)*Ball.t  #v=u+at
             self.ball_rect.bottom += disp_y #updates the coordinates of the bottom most point
             self.y = self.ball_rect.bottom #the update coordinates are stored in y value
@@ -89,25 +93,27 @@ class Ball:
 #Turning on and off Interactive Mode
 interactive = False
 curr_ball = None
-ball1 = Ball(window_width//2, window_height-130, 10) #Creating a Ball object
+ball1 = Ball(window_width//2, window_height-130, 10, output["Ball"]) #Creating a Ball object
 back = 0 #To count current scene
 back_dict = {0:10, 1:1, 2:1.6} #Stores value of acceleration due to gravitation force.
 #In back_dict the value for key = 1 is density of the medium rather than acceleration value
 c_pressed = False #To check if c key is pressed.
 mousebutton = False
+esc = False
 
 #Font generation
 text_font = pygame.font.Font("graphics/font/gooddog-plain.regular.ttf",40)
 
-#Showing waiting screen
-while loadScreen.load_screen(screen):
-    continue
-#Showing loading Screen
-while loadScreen.loading(screen):
-    continue
+if show_load:
+    #Showing waiting screen
+    while loadScreen.load_screen(screen):
+        continue
+    #Showing loading Screen
+    while loadScreen.loading(screen):
+        continue
 
 size = screen.get_size()
-scale = round(size[1]/window_height, 2)
+scale = round(size[0]/window_width, 2)
 bottomline = window_height-130*scale #To set the collision point
 
 if size[0]!=window_width:
@@ -127,7 +133,7 @@ if size[0]!=window_width:
 while True:
     ball_pos = []
     for i in Ball.balls:
-        ball_pos.append((i.x-100, i.x+100))
+        ball_pos.append((i.x-150, i.x+150))
 
     #Rendering the text to show density of the medium
     add_surface = text_font.render(f'Density of medium = {(round(back_dict[1], 2))}', None, 'Black')
@@ -143,10 +149,16 @@ while True:
             scale = round(event.w/window_width, 2)
             for i in Ball.balls:
                 i.replot_x(scale)
-                print(screen.get_size())
             window_height = event.h
             window_width = event.w
             screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
+            bg_surface = pygame.image.load('graphics/bg/bg.png').convert()
+            bg_grd = pygame.image.load('graphics/bg/bground.png').convert_alpha()
+            bg_water = pygame.image.load('graphics/water/water.png').convert()
+            bg_moon = pygame.image.load('graphics/moon/moonsky.png').convert()
+            bg_moongrd = pygame.image.load('graphics/moon/moongrd.png').convert_alpha()
+            midscene = pygame.image.load('graphics/Scenes/enter2.png').convert()
+            legend = pygame.image.load(('graphics/Scenes/legends.png')).convert_alpha()
             print(scale)
             bg_surface = pygame.transform.scale_by(bg_surface, scale)
             bg_grd = pygame.transform.scale_by(bg_grd, scale)
@@ -159,7 +171,7 @@ while True:
              #Changing the y velocity of ball when Space key is pressed
              for i in Ball.balls:
                 if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > window_height-round(135*scale) and back == 0):
-                    i.v_y = -random.randint(10, 20)
+                    i.v_y = -random.randint(15, 34)
                 if event.key == pygame.K_SPACE and (abs(i.v_y)<=1 and back == 1):
                     i.v_y = -random.randint(6, 10)
                 if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > window_height-round(160*scale) and back == 2):
@@ -179,11 +191,11 @@ while True:
                             ready = False
                             x = random.randint(50, window_width-50)
                 if back == 0:
-                    ball = Ball(x, bottomline, 10)
+                    ball = Ball(x, bottomline, 10, output["Ball"])
                 elif back == 1:
-                    ball = Ball(x, bottomline, 10)
+                    ball = Ball(x, bottomline, 10, output["Ball"])
                 else:
-                    ball = Ball(x, 0, 10)
+                    ball = Ball(x, 0, 10, output["Ball"])
              #Removing balls based on FIFO (First-in-first-out)
              elif event.key == pygame.K_r:
                     if len(Ball.balls)>0:
@@ -196,6 +208,10 @@ while True:
                     else:
                         back -=2
                     c_pressed = True
+             elif event.key == pygame.K_h:
+                 for i in Ball.balls:
+                     i.ball_rect.bottom = 200
+                     i.v_y = 0
 
              if event.key == pygame.K_RETURN and c_pressed: #Checks if Enter key is pressed after c
                  c_pressed = False
@@ -212,6 +228,8 @@ while True:
              #Code for interactive mode
              if event.key == pygame.K_i:
                  interactive = not interactive
+             if event.key == pygame.K_ESCAPE:
+                 esc = not esc
 
         elif event.type == pygame.MOUSEBUTTONDOWN and interactive:
              mousebutton = True
@@ -234,7 +252,7 @@ while True:
                         dragger = dragger and i.dragging
                 if not dragger or len(Ball.balls) == 0:
                     if 50<=event.pos[0]<=window_width-50 and 50<=event.pos[1]<=bottomline-50:
-                        ball = Ball(event.pos[0], event.pos[1], 10)
+                        ball = Ball(event.pos[0], event.pos[1], 10, output["Ball"])
     if interactive:
         if mousebutton and curr_ball != None:
             curr_ball.ball_rect.center = pygame.mouse.get_pos()
@@ -242,40 +260,54 @@ while True:
 
     screen.blit(bg_surface, (0,0)) #Adds the background on the screen
 
-    if c_pressed: #If c_pressed == True all the balls are removed and "Press Enter is shown"
+    if esc:
+        output_new = menu.menu(screen)
+        for props in output_new:
+            if output_new[props] != output[props]:
+                output[props] = output_new[props]
+        if not interactive:
+            for i in Ball.balls:
+                i.type = output["Ball"]
+                i.ball_surface = pygame.image.load(f'graphics/ball/{i.type}.png').convert_alpha()
+        esc = False
+
+    else:
+        if c_pressed: #If c_pressed == True all the balls are removed and "Press Enter is shown"
+            for i in Ball.balls:
+                i.remove_ball()
+            screen.blit(midscene, (0,0))
+    
+        else: 
+        #Else the background is added depending on current scene
+        #Also sets the bottomline of each scene
+            if back == 1:
+                screen.blit(bg_water, (0,0))
+                screen.blit(add_surface, add_rect)
+                bottomline = window_height
+            elif back == 0:
+                screen.blit(bg_surface, (0,0))
+                screen.blit(bg_grd, (0, 0))
+                bottomline = window_height- round(130*scale)
+            elif back == 2:
+                screen.blit(bg_moon, (0,0))
+                screen.blit(bg_moongrd, (0,0))
+                bottomline = window_height-round(155*scale)
+
+            screen.blit(legend, (window_width-150, 0)) #To add legends on screen
+
+        #Basic Physics and mechanics
         for i in Ball.balls:
-            i.remove_ball()
-        screen.blit(midscene, (0,0))
-   
-    else: 
-    #Else the background is added depending on current scene
-    #Also sets the bottomline of each scene
-        if back == 1:
-            screen.blit(bg_water, (0,0))
-            screen.blit(add_surface, add_rect)
-            bottomline = window_height
-        elif back == 0:
-            screen.blit(bg_surface, (0,0))
-            screen.blit(bg_grd, (0, 0))
-            bottomline = window_height- round(130*scale)
-        elif back == 2:
-            screen.blit(bg_moon, (0,0))
-            screen.blit(bg_moongrd, (0,0))
-            bottomline = window_height-round(155*scale)
-
-        screen.blit(legend, (window_width-150, 0)) #To add legends on screen
-
-    #Basic Physics and mechanics
-    for i in Ball.balls:
-            screen.blit(i.ball_surface, i.ball_rect.topleft) #Shows ball on screen
-            vectors.show_vectors(screen, i) #To show vectors of each ball
-            i.sense_medium(back_dict[back]) #Tracks medium
-            i.drag() #Applies drag
-            i.update_position()
-            if i.ball_rect.bottom>=bottomline: #Collision Detection
-                i.ball_rect.bottom = bottomline
-                if i.v_y>0:
-                    i.v_y = -i.v_y*i.e
+                screen.blit(i.ball_surface, i.ball_rect.topleft) #Shows ball on screen
+                vectors.show_vectors(screen, i) #To show vectors of each ball
+                i.sense_medium(back_dict[back]) #Tracks medium
+                i.drag() #Applies drag
+                i.update_position()
+                if i.ball_rect.bottom>=bottomline: #Collision Detection
+                    i.ball_rect.bottom = bottomline
+                    if 0<=abs(i.v_y)<=3:
+                        i.v_y = 0
+                    elif i.v_y>0:
+                        i.v_y = -i.v_y*i.e
 
     pygame.display.update() #To update screen by showing newly blit surfaces
     clock.tick(30) #Adds delay of 30ms
