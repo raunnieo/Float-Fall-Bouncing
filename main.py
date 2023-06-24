@@ -35,7 +35,7 @@ class Ball:
         self.x = x
         self.y = y
         self.type = type
-        self.e = 0.7*(1 + (self.type-1)*0.1) #Coefficient of restitution
+        self.e = 0.7*(1 + (self.type-1)*0.13) #Coefficient of restitution
         self.g = g
         self.gNet = g
         self.v_x = 0
