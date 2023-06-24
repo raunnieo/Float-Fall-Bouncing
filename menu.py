@@ -27,7 +27,7 @@ def menu(screen):
                     output["Ball"] = 2
                 elif event.key == pygame.K_3:
                     output["Ball"] = 3
-                elif event.key == pygame.K_3:
+                elif event.key == pygame.K_4:
                     output["Ball"] = 4
                 if event.key == pygame.K_ESCAPE:
                     flag = False
