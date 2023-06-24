@@ -177,7 +177,7 @@ while True:
                 if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > window_height-round(160*scale) and back == 2):
                     i.v_y = -random.randint(6, 9)
              #Adding new balls
-             if event.key == pygame.K_a and len(Ball.balls)<3 : #Limits the maximum number of balls to 3
+             if event.key == pygame.K_a and len(Ball.balls)<4 : #Limits the maximum number of balls to 4
                 #Adding balls at different position depending on the scene
                 ready = False
                 x = random.randint(50, window_width-50)
@@ -246,7 +246,7 @@ while True:
              curr_ball = None
    
         if interactive:
-            if event.type == pygame.MOUSEBUTTONDOWN and len(Ball.balls) < 3:
+            if event.type == pygame.MOUSEBUTTONDOWN and len(Ball.balls) < 4:
                 dragger = True
                 for i in Ball.balls:
                         dragger = dragger and i.dragging
