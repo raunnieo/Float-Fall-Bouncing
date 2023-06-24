@@ -6,8 +6,8 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-window_height = 650
-window_width = 1259
+window_height = 793
+window_width = 1410
 screen = pygame.display.set_mode((window_width,window_height), pygame.RESIZABLE)
 screen.fill("Black")
 clock.tick(1)
@@ -49,10 +49,7 @@ def load_screen(screen):
             window_width = event.w
             resize[0] = not resize[0]
 
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_k:
-                return False
-    return True
+    return False
 
 bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
 barRect = bar.get_rect(topright = (0,0))
