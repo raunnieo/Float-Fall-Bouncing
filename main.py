@@ -9,10 +9,10 @@ import vectors
 pygame.init()
 
 #Screen Setup
-window_height = 650
-window_width = 1259
+window_height = 793
+window_width = 1410
 screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE) #Makes a window
-pygame.display.set_caption('GravitySim') #Sets the name of the window
+pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
 clock = pygame.time.Clock() #To add time delay in game loop
 
 #Making required surfaces
@@ -125,6 +125,9 @@ if size[0]!=window_width:
 
 #Main loop
 while True:
+    ball_pos = []
+    for i in Ball.balls:
+        ball_pos.append((i.x-100, i.x+100))
 
     #Rendering the text to show density of the medium
     add_surface = text_font.render(f'Density of medium = {(round(back_dict[1], 2))}', None, 'Black')
@@ -137,9 +140,10 @@ while True:
             pygame.quit()
             exit()
         elif event.type == pygame.VIDEORESIZE:
-            scale = round(event.h/window_height, 2)
+            scale = round(event.w/window_width, 2)
             for i in Ball.balls:
                 i.replot_x(scale)
+                print(screen.get_size())
             window_height = event.h
             window_width = event.w
             screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
@@ -163,12 +167,23 @@ while True:
              #Adding new balls
              if event.key == pygame.K_a and len(Ball.balls)<3 : #Limits the maximum number of balls to 3
                 #Adding balls at different position depending on the scene
+                ready = False
+                x = random.randint(50, window_width-50)
+                if len(Ball.balls)==0:
+                    ready = True
+                while not ready:
+                    for pos in ball_pos:
+                        if x not in range(pos[0], pos[1]):
+                            ready = True
+                        else:
+                            ready = False
+                            x = random.randint(50, window_width-50)
                 if back == 0:
-                    ball = Ball(random.randint(50, 900), bottomline, 10)
+                    ball = Ball(x, bottomline, 10)
                 elif back == 1:
-                    ball = Ball(random.randint(50, 900), bottomline, 10)
+                    ball = Ball(x, bottomline, 10)
                 else:
-                    ball = Ball(random.randint(50, 900), 0, 10)
+                    ball = Ball(x, 0, 10)
              #Removing balls based on FIFO (First-in-first-out)
              elif event.key == pygame.K_r:
                     if len(Ball.balls)>0:
