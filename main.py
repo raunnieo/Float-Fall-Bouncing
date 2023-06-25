@@ -10,22 +10,21 @@ import menu
 pygame.init()
 
 #Screen Setup
-window_height = 793
-window_width = 1410
-screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE) #Makes a window
+window_height = 1080
+window_width = 1920
+screen = pygame.display.set_mode((window_width, window_height), pygame.FULLSCREEN) #Makes a window
 pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
 clock = pygame.time.Clock() #To add time delay in game loop
 show_load = True
 
 output = {"Menu": False, "Ball":1}
 #Making required surfaces
-bg_surface = pygame.image.load('graphics/bg/bg.png').convert()
-bg_grd = pygame.image.load('graphics/bg/bground.png').convert_alpha()
+bg_surface = pygame.image.load('graphics/ground/2ground.png').convert()
+# bg_grd = pygame.image.load('graphics/2ground/2ground.png').convert_alpha()
 bg_water = pygame.image.load('graphics/water/water.png').convert()
 bg_moon = pygame.image.load('graphics/moon/moonsky.png').convert()
 bg_moongrd = pygame.image.load('graphics/moon/moongrd.png').convert_alpha()
 midscene = pygame.image.load('graphics/Scenes/enter2.png').convert()
-legend = pygame.image.load(('graphics/Scenes/legends.png')).convert_alpha()
 
 #Ball class to store and control properties of body aka ball
 class Ball:
@@ -35,7 +34,7 @@ class Ball:
         self.x = x
         self.y = y
         self.type = type
-        self.e = 0.7*(1 + (self.type-1)*0.13) #Coefficient of restitution
+        self.e = 0.6*(1 + (self.type-1)*0.15) #Coefficient of restitution
         self.g = g
         self.gNet = g
         self.v_x = 0
@@ -113,12 +112,13 @@ if show_load:
         continue
 
 size = screen.get_size()
+print(size)
 scale = round(size[0]/window_width, 2)
-bottomline = window_height-130*scale #To set the collision point
+bottomline = window_height-235*scale #To set the collision point
 
 if size[0]!=window_width:
     bg_surface = pygame.transform.scale_by(bg_surface, scale)
-    bg_grd = pygame.transform.scale_by(bg_grd, scale)
+    # bg_grd = pygame.transform.scale_by(bg_grd, scale)
     bg_water = pygame.transform.scale_by(bg_water, scale)
     bg_moon = pygame.transform.scale_by(bg_moon, scale)
     bg_moongrd = pygame.transform.scale_by(bg_moongrd, scale)
@@ -127,7 +127,7 @@ if size[0]!=window_width:
         i.replot_x(scale)
     window_height = size[1]
     window_width = size[0]
-    screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 
 #Main loop
 while True:
@@ -152,16 +152,15 @@ while True:
             window_height = event.h
             window_width = event.w
             screen = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
-            bg_surface = pygame.image.load('graphics/bg/bg.png').convert()
-            bg_grd = pygame.image.load('graphics/bg/bground.png').convert_alpha()
+            bg_surface = pygame.image.load('graphics/ground/2ground.png').convert()
+            # bg_grd = pygame.image.load('graphics/bg/b2ground.png').convert_alpha()
             bg_water = pygame.image.load('graphics/water/water.png').convert()
             bg_moon = pygame.image.load('graphics/moon/moonsky.png').convert()
             bg_moongrd = pygame.image.load('graphics/moon/moongrd.png').convert_alpha()
             midscene = pygame.image.load('graphics/Scenes/enter2.png').convert()
-            legend = pygame.image.load(('graphics/Scenes/legends.png')).convert_alpha()
             print(scale)
             bg_surface = pygame.transform.scale_by(bg_surface, scale)
-            bg_grd = pygame.transform.scale_by(bg_grd, scale)
+            # bg_grd = pygame.transform.scale_by(bg_grd, scale)
             bg_water = pygame.transform.scale_by(bg_water, scale)
             bg_moon = pygame.transform.scale_by(bg_moon, scale)
             bg_moongrd = pygame.transform.scale_by(bg_moongrd, scale)
@@ -170,7 +169,7 @@ while True:
         elif event.type == pygame.KEYDOWN:
              #Changing the y velocity of ball when Space key is pressed
              for i in Ball.balls:
-                if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > window_height-round(135*scale) and back == 0):
+                if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > window_height-round(245*scale) and back == 0):
                     i.v_y = -random.randint(15, 34)
                 if event.key == pygame.K_SPACE and (abs(i.v_y)<=1 and back == 1):
                     i.v_y = -random.randint(6, 10)
@@ -286,14 +285,12 @@ while True:
                 bottomline = window_height
             elif back == 0:
                 screen.blit(bg_surface, (0,0))
-                screen.blit(bg_grd, (0, 0))
-                bottomline = window_height- round(130*scale)
+                # screen.blit(bg_grd, (0, 0))
+                bottomline = window_height- round(235*scale)
             elif back == 2:
                 screen.blit(bg_moon, (0,0))
                 screen.blit(bg_moongrd, (0,0))
                 bottomline = window_height-round(155*scale)
-
-            screen.blit(legend, (window_width-150, 0)) #To add legends on screen
 
         #Basic Physics and mechanics
         for i in Ball.balls:

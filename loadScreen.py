@@ -29,7 +29,7 @@ def load_screen(screen):
     global window_height
     global window_width
     global resize
-    surface  = pygame.image.load('graphics/Scenes/lo1.png').convert()
+    surface  = pygame.image.load('graphics/Scenes/2lo1.png').convert()
         
     if resize[0] == True:
             surface= pygame.transform.scale_by(surface, resize[1]/resize[2])
@@ -51,7 +51,7 @@ def load_screen(screen):
 
     return False
 
-bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
+bar = pygame.image.load('graphics/Scenes/2lobar.png').convert_alpha()
 barRect = bar.get_rect(topright = (0,0))
 def loading(screen):
     """
@@ -65,9 +65,9 @@ def loading(screen):
     """
     global window_width
     global loader
-    bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
-    surface  = pygame.image.load('graphics/Scenes/lo1.png').convert()
-    surface2  = pygame.image.load('graphics/Scenes/lo2.png').convert_alpha()
+    bar = pygame.image.load('graphics/Scenes/2lobar.png').convert_alpha()
+    surface  = pygame.image.load('graphics/Scenes/2lo1.png').convert()
+    surface2  = pygame.image.load('graphics/Scenes/2lo2.png').convert_alpha()
     if resize[0] == True:
         surface  = pygame.transform.scale_by(surface, resize[1]/resize[2])
         surface2 = pygame.transform.scale_by(surface2, resize[1]/resize[2])
@@ -82,10 +82,10 @@ def loading(screen):
     elif barRect.right>126:
         loader[4]=loader[0]
     else:
-        loader[4] = 200
+        loader[4] = 10
 
-    if barRect.right<=1259:
-        barRect.right += 0.5*loader[4]
+    if barRect.right<=1920:
+        barRect.right += loader[4]*3
     else:
         return False
 
@@ -100,9 +100,9 @@ def loading(screen):
             window_width = event.w
             resize[0] = not resize[0]
 
-    screen.blit(surface, (0,0))
+    # screen.blit(surface, (0,0))
     screen.blit(bar, barRect.topleft)
     screen.blit(surface2, (0,0))
     pygame.display.update()
-    clock.tick(20)
+    # clock.tick(20)
     return True
