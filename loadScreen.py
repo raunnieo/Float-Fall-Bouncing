@@ -19,7 +19,7 @@ pygame.init()
 clock = pygame.time.Clock()
 
 #Screen Setup
-screen_mode = 2
+screen_mode = 1
 scaling = int((1920/pygame.display.get_desktop_sizes()[0][0])*100)
 screen = display_init(screen_mode)
 

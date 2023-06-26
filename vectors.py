@@ -18,7 +18,7 @@ def display_init(screen_mode):
 
 
 clock = pygame.time.Clock()
-screen_mode = 2
+screen_mode = 1
 screen = display_init(screen_mode)
 text_font = pygame.font.Font(None ,50)
 
