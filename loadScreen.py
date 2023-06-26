@@ -2,21 +2,37 @@ import pygame
 from sys import exit 
 import random
 
+def display_init(screen_mode):
+    size = pygame.display.get_desktop_sizes()[0]
+    if screen_mode == 2:
+        window_height = size[1]*0.89
+        window_width = window_height * 1.77
+        size  = (window_width, window_height)
+        screen = pygame.display.set_mode((window_width, window_height))
+        return screen
+    else:
+        screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        return screen
+
 pygame.init()
 
 clock = pygame.time.Clock()
 
-window_height = 793
-window_width = 1410
-screen = pygame.display.set_mode((window_width,window_height), pygame.RESIZABLE)
-screen.fill("Black")
-clock.tick(1)
-
-resize = [False, 0, 0]
+#Screen Setup
+screen_mode = 2
+scaling = int((1920/pygame.display.get_desktop_sizes()[0][0])*100)
+screen = display_init(screen_mode)
 
 loader = [1, 9, 27, 5, 0]
 
+load_bg = pygame.image.load(f"graphics/{scaling}/load/loadBG_{screen_mode}.png").convert()
+
 def load_screen(screen):
+    global scaling
+    global screen_mode
+    global load_bg
+    screen.fill("Black")
+    clock.tick(1)
     """
     Displays a series of loading screens before the game starts.
 
@@ -26,33 +42,27 @@ def load_screen(screen):
     Returns:
         bool: True if the loading screens should continue, False if they should stop.
     """
-    global window_height
-    global window_width
-    global resize
-    surface  = pygame.image.load('graphics/Scenes/2lo1.png').convert()
-        
-    if resize[0] == True:
-            surface= pygame.transform.scale_by(surface, resize[1]/resize[2])
-    screen.blit(surface, (0,0))
-    
-    clock.tick(5)
+    screen.blit(load_bg, (0,0))
     pygame.display.update()
+    clock.tick(5)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        elif event.type == pygame.VIDEORESIZE:
-            resize[1]=event.w
-            resize[2]=window_width
-            window_height = event.h
-            window_width = event.w
-            resize[0] = not resize[0]
-
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_f:
+                if screen_mode == 1:
+                    screen_mode = 2
+                else:
+                    screen_mode = 1
+                screen = display_init(screen_mode)
+                load_bg = pygame.image.load(f"graphics/{scaling}/load/loadBG_{screen_mode}.png").convert()
     return False
 
-bar = pygame.image.load('graphics/Scenes/2lobar.png').convert_alpha()
-barRect = bar.get_rect(topright = (0,0))
+loadbar = pygame.image.load(f"graphics/{scaling}/load/loadbar_{screen_mode}.png").convert_alpha()
+barRect = loadbar.get_rect(topright = (0,0))
+loadScreen = pygame.image.load(f"graphics/{scaling}/load/load_{screen_mode}.png").convert_alpha()
 def loading(screen):
     """
     Displays a loading animation on the screen.
@@ -63,15 +73,12 @@ def loading(screen):
     Returns:
         bool: True if the loading animation should continue, False if it should stop.
     """
-    global window_width
     global loader
-    bar = pygame.image.load('graphics/Scenes/2lobar.png').convert_alpha()
-    surface  = pygame.image.load('graphics/Scenes/2lo1.png').convert()
-    surface2  = pygame.image.load('graphics/Scenes/2lo2.png').convert_alpha()
-    if resize[0] == True:
-        surface  = pygame.transform.scale_by(surface, resize[1]/resize[2])
-        surface2 = pygame.transform.scale_by(surface2, resize[1]/resize[2])
-        bar = pygame.transform.scale_by(bar, resize[1]/resize[2])
+    global loadbar
+    global loadScreen
+    global load_bg
+    global scaling
+    global screen_mode
 
     if barRect.right>1133:
         loader[4]=loader[3]
@@ -82,10 +89,10 @@ def loading(screen):
     elif barRect.right>126:
         loader[4]=loader[0]
     else:
-        loader[4] = 10
+        loader[4] = 100
 
-    if barRect.right<=1920:
-        barRect.right += loader[4]*3
+    if barRect.right<=screen.get_width():
+        barRect.right += loader[4]*0.5
     else:
         return False
 
@@ -93,16 +100,21 @@ def loading(screen):
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        elif event.type == pygame.VIDEORESIZE:
-            resize[1]=event.w
-            resize[2]=window_width
-            window_height = event.h
-            window_width = event.w
-            resize[0] = not resize[0]
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_f:
+                if screen_mode == 1:
+                    screen_mode = 2
+                else:
+                    screen_mode = 1
+                screen = display_init(screen_mode)
+                loadbar = pygame.image.load(f"graphics/{scaling}/load/loadbar_{screen_mode}.png").convert_alpha()
+                loadScreen = pygame.image.load(f"graphics/{scaling}/load/load_{screen_mode}.png").convert_alpha()
+                load_bg = pygame.image.load(f"graphics/{scaling}/load/loadBG_{screen_mode}.png").convert()
+                screen.blit(load_bg, (0,0))
 
     # screen.blit(surface, (0,0))
-    screen.blit(bar, barRect.topleft)
-    screen.blit(surface2, (0,0))
+    screen.blit(loadbar, barRect.topleft)
+    screen.blit(loadScreen, (0,0))
     pygame.display.update()
-    # clock.tick(20)
+    clock.tick(30)
     return True

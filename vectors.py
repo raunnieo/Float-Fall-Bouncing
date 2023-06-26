@@ -4,8 +4,22 @@ from math import sqrt
 
 pygame.init()
 
+def display_init(screen_mode):
+    size = pygame.display.get_desktop_sizes()[0]
+    if screen_mode == 2:
+        window_height = size[1]*0.89
+        window_width = window_height * 1.77
+        size  = (window_width, window_height)
+        screen = pygame.display.set_mode((window_width, window_height))
+        return screen
+    else:
+        screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        return screen
+
+
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((1410,793))
+screen_mode = 2
+screen = display_init(screen_mode)
 text_font = pygame.font.Font(None ,50)
 
 net_color = "White"
