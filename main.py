@@ -97,10 +97,11 @@ class Ball:
             #Calculating buoyant force due to medium
             #Assumed ball to be cube
             fb = 0
+            depth = 305 * scale_2
             for i in Ball.balls:
-                if i.ball_rect.bottom>305:
-                    if 305<i.ball_rect.bottom<=405:
-                        fb = density*self.g*(self.ball_rect.bottom-305)*self.volume/(self.mass*100)
+                if i.ball_rect.bottom>depth:
+                    if depth<i.ball_rect.bottom<=depth+100:
+                        fb = density*self.g*(self.ball_rect.bottom-depth)*self.volume/(self.mass*100)
                         i.f = 0.01
                     else:
                         fb = density*self.g*self.volume/self.mass
@@ -114,7 +115,7 @@ class Ball:
 interactive = False
 curr_ball = None
 ball1 = Ball(window_width//2, window_height-130, 10, output["Ball"]) #Creating a Ball object
-back = 0 #To count current scene
+back = output["Scene"] #To count current scene
 back_dict = {0:10, 1:1, 2:1.6} #Stores value of acceleration due to gravitation force.
 #In back_dict the value for key = 1 is density of the medium rather than acceleration value
 mousebutton = False
@@ -226,11 +227,11 @@ while True:
 
                 #To change the density of medium by RIGHT and LEFT arrow keys  
                 if event.key == pygame.K_RIGHT and back == 1:
-                    if 0.8<=back_dict[back]<1.5: #Restricts the values to be between 0.8 and 1.5
+                    if 0.8<=back_dict[back]<1.9: #Restricts the values to be between 0.8 and 1.5
                         back_dict[back]+=0.1
 
                 if event.key == pygame.K_LEFT and back == 1:
-                    if 0.8<back_dict[back]<=1.6:
+                    if 0.8<back_dict[back]<=2.0:
                         back_dict[back]-=0.1
                 
                 #Code for interactive mode
@@ -274,10 +275,8 @@ while True:
         screen.blit(ground, (0,0)) #Adds the background on the screen
 
         if esc:
-            output_new = menu.menu(screen)
-            for props in output_new:
-                if output_new[props] != output[props]:
-                    output[props] = output_new[props]
+            output = menu.menu(screen)
+            back = output["Scene"]
             if not interactive:
                 for i in Ball.balls:
                     i.type = output["Ball"]
@@ -306,7 +305,7 @@ while True:
                     i.update_position()
                     if i.ball_rect.bottom>=bottomline: #Collision Detection
                         i.ball_rect.bottom = bottomline
-                        if 0<=abs(i.v_y)<=3:
+                        if 0<=abs(i.v_y)<=3 and back != 1:
                             i.v_y = 0
                         elif i.v_y>0:
                             i.v_y = -i.v_y*i.e

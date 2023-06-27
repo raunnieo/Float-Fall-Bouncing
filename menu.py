@@ -60,7 +60,7 @@ def menu(screen):
     mode_button = buttons.Button(587*scale, 808*scale_2, mode, 10)
     object_button = buttons.Button(841*scale, 808*scale_2, object, 10)
     scene_button = buttons.Button(1096*scale, 808*scale_2, scene, 10)
-    start_button = buttons.Button(1347*scale, 808*scale_2, start, 0)
+    start_button = buttons.Button(1347*scale, 808*scale_2, start, 10)
     settings_button = buttons.Button(1789*scale, 37*scale_2, settings, 10)
     football_button = buttons.Button(242*scale, 197*scale_2, football, 10)
     tennisball_button = buttons.Button(605*scale, 197*scale_2, tennisball, 10)
@@ -97,6 +97,13 @@ def menu(screen):
                 output["Ball"] = 2
             if volleyball_button.draw(screen):
                 output["Ball"] = 3
+        if menu_tab == 4:
+            if moon_button.draw(screen):
+                output["Scene"] = 2
+            if water_button.draw(screen):
+                output["Scene"] = 1
+            if ground_button.draw(screen):
+                output["Scene"] = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
