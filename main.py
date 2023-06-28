@@ -25,7 +25,7 @@ window_height = size[1]
 
 pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
 
-show_load = False
+show_load = True
 output = {"IMode":False, "Ball":1, "Scene":0}
 
 play_pause = "play"
@@ -335,6 +335,12 @@ while run:
 
     if button2.draw(screen.screen):
         run = end.exit_screen(screen)
+        if run:
+            if play_pause == "pause":
+                button1.image = pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_{screen.screen_mode}.png").convert_alpha()
+                play_pause = "play"
 
     pygame.display.update() #To update screen by showing newly blit surfaces
     clock.tick(30) #Adds delay of 30ms
+
+pygame.quit()

@@ -9,9 +9,9 @@ def exit_screen(screen):
     exit_screen = pygame.image.load(f"graphics/{scaling}/exit/exit_display_{screen.screen_mode}.png").convert_alpha()
     cross = pygame.image.load(f"graphics/{scaling}/exit/cross_{screen.screen_mode}.png").convert_alpha()
     yes = pygame.image.load(f"graphics/{scaling}/exit/yes_{screen.screen_mode}.png").convert_alpha()
-    cross_button = buttons.Button(967, 187, cross, 0)
-    yes_button = buttons.Button(678,594 , yes, 0)
-    screen.screen.blit(exit_screen, (506, 177))
+    cross_button = buttons.Button(1208*scale_2, 235*scale_2, cross, 0)
+    yes_button = buttons.Button(847*scale_2, 742*scale_2 , yes, 0)
+    screen.screen.blit(exit_screen, (632*scale_2, 222*scale_2))
     while True:
         if yes_button.draw(screen.screen):
             return False
