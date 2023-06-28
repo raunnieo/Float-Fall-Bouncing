@@ -25,7 +25,7 @@ window_height = size[1]
 
 pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
 
-show_load = True
+show_load = False
 output = {"IMode":False, "Ball":1, "Scene":0}
 
 play_pause = "play"
@@ -102,6 +102,9 @@ class Ball:
                 else:
                     i.gNet = i.g
                     i.f = 0.01
+        else:
+            for i in Ball.balls:
+                i.f = 0.01
 
 #Turning on and off Interactive Mode
 interactive = False
@@ -166,6 +169,7 @@ while run:
                     Exit = pygame.image.load(f"graphics/{scaling}/buttons/exit_{screen.screen_mode}.png").convert_alpha()
                     scale_1 = round(size[0]/1920, 2)
                     size = screen.screen.get_size()
+                    print(size)
                     scale_2 = round(size[0]/1920, 2)
                     scale = scale_2/scale_1
                     bottomline = window_height-235*scale #To set the collision point
@@ -339,6 +343,10 @@ while run:
             if play_pause == "pause":
                 button1.image = pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_{screen.screen_mode}.png").convert_alpha()
                 play_pause = "play"
+    # print(back)
+
+    # for i in Ball.balls:
+    #     print(i.gNet)
 
     pygame.display.update() #To update screen by showing newly blit surfaces
     clock.tick(30) #Adds delay of 30ms
