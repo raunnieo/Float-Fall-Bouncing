@@ -6,19 +6,9 @@ import loadScreen
 import vectors
 import menu
 import buttons
+import window
+import end
 
-def display_init(screen_mode):
-    size = pygame.display.get_desktop_sizes()[0]
-    if screen_mode == 2:
-        window_height = size[1]*0.89
-        window_width = window_height * 1.77
-        size  = (window_width, window_height)
-        screen = pygame.display.set_mode((window_width, window_height))
-        return screen
-    else:
-        screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-        return screen
-    
 #Initializing PyGame
 pygame.init()
 
@@ -27,23 +17,25 @@ clock = pygame.time.Clock() #To add time delay in game loop
 #Screen Setup
 screen_mode = 1
 scaling = int((1920/pygame.display.get_desktop_sizes()[0][0])*100)
-screen = display_init(screen_mode)
-size = screen.get_size()
+screen = window.Window(1)
+screen.display_init()
+size = screen.screen.get_size()
 window_width = size[0]
 window_height = size[1]
 
 pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
 
-show_load = True
+show_load = False
 output = {"IMode":False, "Ball":1, "Scene":0}
 
 play_pause = "play"
 
 #Making required surfaces
-ground =  pygame.image.load(f"graphics/{scaling}/ground/ground_{screen_mode}.png").convert()
-water = pygame.image.load(f"graphics/{scaling}/water/water_{screen_mode}.png").convert()
-moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen_mode}.png").convert()
-playPAUSE = pygame.image.load(f"graphics/{scaling}/buttons/pause_1.png").convert_alpha()
+ground =  pygame.image.load(f"graphics/{scaling}/ground/ground_{screen.screen_mode}.png").convert()
+water = pygame.image.load(f"graphics/{scaling}/water/water_{screen.screen_mode}.png").convert()
+moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen.screen_mode}.png").convert()
+playPAUSE = pygame.image.load(f"graphics/{scaling}/buttons/pause_{screen.screen_mode}.png").convert_alpha()
+Exit = pygame.image.load(f"graphics/{scaling}/buttons/exit_{screen.screen_mode}.png").convert_alpha()
 # midscene = pygame.image.load('graphics/Scenes/enter2.png').convert()
 
 
@@ -122,7 +114,7 @@ mousebutton = False
 esc = False
 
 #Font generation
-text_font = pygame.font.Font("graphics/font/gooddog-plain.regular.ttf",40)
+text_font = pygame.font.Font("graphics/font/gooddog-plain.regular.ttf", 40)
 
 if show_load:
     #Showing waiting screen
@@ -134,22 +126,25 @@ if show_load:
 
 
 scale_1 = round(size[0]/1920, 2)
-size = screen.get_size()
+size = screen.screen.get_size()
 scale_2 = round(size[0]/1920, 2)
 scale = scale_2/scale_1
-button1 = buttons.Button(1764*scale_2, 29*scale_1, playPAUSE, 0)
+button1 = buttons.Button(1764*scale_2, 29*scale_2, playPAUSE, 0)
+button2 = buttons.Button(1778*scale_2, 997*scale_2, Exit, 0)
 bottomline = window_height-235*scale_2 #To set the collision point
 if size[0]!=window_width:
-    screen_mode = 1
-    ground =  pygame.image.load(f"graphics/{scaling}/ground/ground_{screen_mode}.png").convert()
-    water = pygame.image.load(f"graphics/{scaling}/water/water_{screen_mode}.png").convert()
-    moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen_mode}.png").convert()
+    screen.screen_mode = 2
+    screen.display_init()
+    ground =  pygame.image.load(f"graphics/{scaling}/ground/ground_{screen.screen_mode}.png").convert()
+    water = pygame.image.load(f"graphics/{scaling}/water/water_{screen.screen_mode}.png").convert()
+    moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen.screen_mode}.png").convert()
     for i in Ball.balls:
         i.replot_x(scale)
     window_height = size[1]
     window_width = size[0]
 #Main loop
-while True:
+run = True
+while run:
     #To detect any event taking place
     for event in pygame.event.get():
         #Quit and close the window if Close Button(X) is pressed
@@ -159,16 +154,18 @@ while True:
         if play_pause == "play":
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_f:
-                    if screen_mode == 1:
-                        screen_mode = 2
+                    if screen.screen_mode == 1:
+                        screen.screen_mode = 2
                     else:
-                        screen_mode = 1
-                    screen = display_init(screen_mode)
-                    ground =  pygame.image.load(f"graphics/{scaling}/ground/ground_{screen_mode}.png").convert()
-                    water = pygame.image.load(f"graphics/{scaling}/water/water_{screen_mode}.png").convert()
-                    moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen_mode}.png").convert()
+                        screen.screen_mode = 1
+                    screen.display_init()
+                    ground =  pygame.image.load(f"graphics/{scaling}/ground/ground_{screen.screen_mode}.png").convert()
+                    water = pygame.image.load(f"graphics/{scaling}/water/water_{screen.screen_mode}.png").convert()
+                    moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen.screen_mode}.png").convert()
+                    playPAUSE = pygame.image.load(f"graphics/{scaling}/buttons/pause_{screen.screen_mode}.png").convert_alpha()
+                    Exit = pygame.image.load(f"graphics/{scaling}/buttons/exit_{screen.screen_mode}.png").convert_alpha()
                     scale_1 = round(size[0]/1920, 2)
-                    size = screen.get_size()
+                    size = screen.screen.get_size()
                     scale_2 = round(size[0]/1920, 2)
                     scale = scale_2/scale_1
                     bottomline = window_height-235*scale #To set the collision point
@@ -176,7 +173,8 @@ while True:
                         i.replot_x(scale)
                     window_height = size[1]
                     window_width = size[0]
-                    button1 = buttons.Button(1764*scale_2, 29*scale, playPAUSE, 1)
+                    button1 = buttons.Button(1764*scale_2, 29*scale_2, playPAUSE, 0)
+                    button2 = buttons.Button(1778*scale_2, 997*scale_2, Exit, 0)
                 
                 #Changing the y velocity of ball when Space key is pressed
                 for i in Ball.balls:
@@ -272,7 +270,7 @@ while True:
             if mousebutton and curr_ball != None:
                 curr_ball.ball_rect.center = pygame.mouse.get_pos()
                 curr_ball.v_y = 0
-        screen.blit(ground, (0,0)) #Adds the background on the screen
+        screen.screen.blit(ground, (0,0)) #Adds the background on the screen
 
         if esc:
             output = menu.menu(screen)
@@ -281,24 +279,41 @@ while True:
                 for i in Ball.balls:
                     i.type = output["Ball"]
                     i.ball_surface = pygame.image.load(f'graphics/ball/{i.type}.png').convert_alpha()
+            ground =  pygame.image.load(f"graphics/{scaling}/ground/ground_{screen.screen_mode}.png").convert()
+            water = pygame.image.load(f"graphics/{scaling}/water/water_{screen.screen_mode}.png").convert()
+            moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen.screen_mode}.png").convert()
+            playPAUSE = pygame.image.load(f"graphics/{scaling}/buttons/pause_{screen.screen_mode}.png").convert_alpha()
+            Exit = pygame.image.load(f"graphics/{scaling}/buttons/exit_{screen.screen_mode}.png").convert_alpha()
+            scale_1 = round(size[0]/1920, 2)
+            screen.display_init()
+            size = screen.screen.get_size()
+            scale_2 = round(size[0]/1920, 2)
+            scale = scale_2/scale_1
+            bottomline = window_height-235*scale #To set the collision point
+            for i in Ball.balls:
+                i.replot_x(scale)
+            window_height = size[1]
+            window_width = size[0]
+            button1 = buttons.Button(1764*scale_2, 29*scale_2, playPAUSE, 0)
+            button2 = buttons.Button(1778*scale_2, 997*scale_2, Exit, 0)
             esc = False
 
         else:
             #Else the background is added depending on current scene
             #Also sets the bottomline of each scene
             if back == 1:
-                screen.blit(water, (0,0))
+                screen.screen.blit(water, (0,0))
                 bottomline = window_height
             elif back == 0:
-                screen.blit(ground, (0,0))
+                screen.screen.blit(ground, (0,0))
                 bottomline = window_height- round(235*scale_2)
             elif back == 2:
-                screen.blit(moon, (0,0))
+                screen.screen.blit(moon, (0,0))
                 bottomline = window_height-round(220*scale_2)
 
             #Basic Physics and mechanics
             for i in Ball.balls:
-                    screen.blit(i.ball_surface, i.ball_rect.topleft) #Shows ball on screen
+                    screen.screen.blit(i.ball_surface, i.ball_rect.topleft) #Shows ball on screen
                     vectors.show_vectors(screen, i) #To show vectors of each ball
                     i.sense_medium(back_dict[back]) #Tracks medium
                     i.drag() #Applies drag
@@ -310,13 +325,16 @@ while True:
                         elif i.v_y>0:
                             i.v_y = -i.v_y*i.e
 
-    if button1.draw(screen):
+    if button1.draw(screen.screen):
         if play_pause == "play":
-            button1.image= pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_1.png").convert_alpha()
+            button1.image= pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_{screen.screen_mode}.png").convert_alpha()
             play_pause = "pause"
         else:
-            button1.image = pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_1.png").convert_alpha()
+            button1.image = pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_{screen.screen_mode}.png").convert_alpha()
             play_pause = "play"
+
+    if button2.draw(screen.screen):
+        run = end.exit_screen(screen)
 
     pygame.display.update() #To update screen by showing newly blit surfaces
     clock.tick(30) #Adds delay of 30ms

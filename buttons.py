@@ -10,6 +10,7 @@ class Button():
 		self.rect.topleft = (x, y)
 		self.clicked = False
 		self.offset = offset
+		self.always_up = False
 
 	def draw(self, surface):
 		action = False
@@ -22,7 +23,7 @@ class Button():
 				self.rect.bottom -= self.offset
 				action = True
 		elif self.offset != 0:
-			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == True:
+			if pygame.mouse.get_pressed()[0] == 1 and (self.clicked == True and not self.always_up):
 				self.clicked = False
 				self.rect.bottom += self.offset
 				action = False

@@ -40,5 +40,5 @@ def show_vectors(screen, body):
     net_surface = text_font.render(f'{round(sqrt((body.v_x**2)+(body.v_y**2)))}', False, 'White')
     net_rect = net_surface.get_rect(center = body.ball_rect.center)
 
-    screen.blit(net_surface, (net_rect.topright[0] + 50, net_rect.topright[1]))
-    pygame.draw.line(screen, net_color, (body.ball_rect.center), (body.ball_rect.center[0] - 2*body.v_x,body.ball_rect.center[1] - 2*body.v_y*-1), 3)
+    screen.screen.blit(net_surface, (net_rect.topright[0] + 50, net_rect.topright[1]))
+    pygame.draw.line(screen.screen, net_color, (body.ball_rect.center), (body.ball_rect.center[0] - 2*body.v_x,body.ball_rect.center[1] - 2*body.v_y*-1), 3)
