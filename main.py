@@ -28,14 +28,15 @@ size = screen.screen.get_size()
 window_width = size[0]
 window_height = size[1]
 
+icon = pygame.image.load("graphics/ball/1.png") #Sets the icon of the window
 pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
+pygame.display.set_icon(icon)
 
+show_load = True # To turn on/off loading sequence
 
-
-show_load = True
 output = {"IMode":False, "Ball":1, "Scene":0}
 
-play_pause = "play"
+play_pause = "play" # Variable for play/pause button
 
 #Making required surfaces
 ground =  pygame.image.load(f"graphics/{scaling}/ground/ground_{screen.screen_mode}.png").convert()
@@ -43,9 +44,6 @@ water = pygame.image.load(f"graphics/{scaling}/water/water_{screen.screen_mode}.
 moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen.screen_mode}.png").convert()
 playPAUSE = pygame.image.load(f"graphics/{scaling}/buttons/pause_{screen.screen_mode}.png").convert_alpha()
 Exit = pygame.image.load(f"graphics/{scaling}/buttons/exit_{screen.screen_mode}.png").convert_alpha()
-# midscene = pygame.image.load('graphics/Scenes/enter2.png').convert()
-
-
 
 #Ball class to store and control properties of body aka ball
 class Ball:
@@ -115,7 +113,7 @@ class Ball:
                 i.f = 0.01
 
 #Turning on and off Interactive Mode
-interactive = False
+interactive = output["IMode"]
 curr_ball = None
 ball1 = Ball(window_width//2, window_height-130, 10, output["Ball"]) #Creating a Ball object
 back = output["Scene"] #To count current scene
@@ -127,13 +125,13 @@ esc = False
 
 if show_load:
     #Showing waiting screen
-    while loadScreen.load_screen(screen):
+    while loadScreen.load_screen(screen, scaling):
         continue
     #Showing loading Screen
-    while loadScreen.loading(screen):
+    while loadScreen.loading(screen, scaling):
         continue
 
-
+# Scaling the variables according to screen size
 scale_1 = round(size[0]/1920, 2)
 size = screen.screen.get_size()
 scale_2 = round(size[0]/1920, 2)
@@ -141,14 +139,13 @@ scale = scale_2/scale_1
 button1 = buttons.Button(1764*scale_2, 29*scale_2, playPAUSE, 0)
 button2 = buttons.Button(1778*scale_2, 997*scale_2, Exit, 0)
 bottomline = window_height-235*scale_2 #To set the collision point
+
 # Define slider properties
 slider_width = 150*scale_2
 slider_height = 10*scale_2
 slider_x = 1710*scale_2  # Default x coordinate
 slider_y = 170*scale_2   # Default y coordinate
 slider_value = 0.5
-#Font generation
-text_font = pygame.font.Font("graphics/font/gooddog-plain.regular.ttf", round(40*scale_2))
 
 # Define text properties
 text_x = 1685*scale_2 # Default x coordinate
@@ -157,10 +154,10 @@ text_y = 200*scale_2   # Default y coordinate
 # Variables for tracking dragging state
 dragging = False
 offset = 0
-
-# Define font for displaying the value
+# Initializing the font variable to show density of medium on screen
 font = pygame.font.Font("graphics/font/AGENCYB.TTF", round(24*scale_2))
 
+# Check if the screen is resized while loading and scale the variables accordingly
 if size[0]!=window_width:
     screen.screen_mode = 2
     screen.display_init()
@@ -221,7 +218,6 @@ while run:
                     Exit = pygame.image.load(f"graphics/{scaling}/buttons/exit_{screen.screen_mode}.png").convert_alpha()
                     scale_1 = round(size[0]/1920, 2)
                     size = screen.screen.get_size()
-                    print(size)
                     scale_2 = round(size[0]/1920, 2)
                     scale = scale_2/scale_1
                     bottomline = window_height-235*scale #To set the collision point
@@ -273,33 +269,12 @@ while run:
                 elif event.key == pygame.K_r:
                         if len(Ball.balls)>0:
                             Ball.balls[0].remove_ball()
-                #Changing the scenes
-                elif event.key == pygame.K_s:
-                    for i in range(len(Ball.balls)):
-                        Ball.balls[0].remove_ball()
-                    if back<2:
-                        back+=1
-                    else:
-                        back -=2
-                    
+
                 elif event.key == pygame.K_h:
                     for i in Ball.balls:
                         i.ball_rect.bottom = 200
                         i.v_y = 0
-
-                #To change the density of medium by RIGHT and LEFT arrow keys  
-                if event.key == pygame.K_RIGHT and back == 1:
-                    if 0.8<=back_dict[back]<1.9: #Restricts the values to be between 0.8 and 1.5
-                        back_dict[back]+=0.1
-
-
-                if event.key == pygame.K_LEFT and back == 1:
-                    if 0.8<back_dict[back]<=2.0:
-                        back_dict[back]-=0.1
-                
-                #Code for interactive mode
-                if event.key == pygame.K_i:
-                    interactive = not interactive
+        
                 if event.key == pygame.K_ESCAPE:
                     esc = not esc
 
@@ -335,8 +310,9 @@ while run:
         screen.screen.blit(ground, (0,0)) #Adds the background on the screen
 
         if esc:
-            output = menu.menu(screen)
+            output = menu.menu(screen,scaling)
             back = output["Scene"]
+            interactive = output["IMode"]
             if not interactive:
                 for i in Ball.balls:
                     i.type = output["Ball"]
@@ -403,7 +379,7 @@ while run:
                             i.v_y = 0
                         elif i.v_y>0:
                             i.v_y = -i.v_y*i.e
-
+    # Shows play/pause button
     if button1.draw(screen.screen):
         if play_pause == "play":
             button1.image= pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_{screen.screen_mode}.png").convert_alpha()
@@ -411,17 +387,13 @@ while run:
         else:
             button1.image = pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_{screen.screen_mode}.png").convert_alpha()
             play_pause = "play"
-
+    # Shows exit button
     if button2.draw(screen.screen):
         run = end.exit_screen(screen)
         if run:
             if play_pause == "pause":
                 button1.image = pygame.image.load(f"graphics/{scaling}/buttons/{play_pause}_{screen.screen_mode}.png").convert_alpha()
                 play_pause = "play"
-    # print(back)
-
-    # for i in Ball.balls:
-    #     print(i.gNet)
 
     pygame.display.update() #To update screen by showing newly blit surfaces
     clock.tick(30) #Adds delay of 30ms
