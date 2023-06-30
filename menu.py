@@ -35,6 +35,7 @@ def menu(screen):
     moon = pygame.image.load(f"graphics/{scaling}/buttons/moon_{screen.screen_mode}.png").convert_alpha()
     ground = pygame.image.load(f"graphics/{scaling}/buttons/ground_{screen.screen_mode}.png").convert_alpha()
     water = pygame.image.load(f"graphics/{scaling}/buttons/water_{screen.screen_mode}.png").convert_alpha()
+    aboutmess = pygame.image.load(f"graphics/{scaling}/buttons/aboutmess_{screen.screen_mode}.png").convert_alpha()
 
     #scale
     size = screen.screen.get_size()
@@ -57,6 +58,7 @@ def menu(screen):
     moon_button = buttons.Button(58*scale, 198*scale_2, moon, 10)
     water_button = buttons.Button(675*scale, 198*scale_2, water, 10)
     ground_button = buttons.Button(1292*scale, 198*scale_2, ground, 10)
+    aboutmess_button = buttons.Button(217*scale, 134*scale_2, aboutmess, 0)
     flag = True
     about_button.draw(screen.screen)
     mode_button.draw(screen.screen)
@@ -90,6 +92,8 @@ def menu(screen):
             menu_tab = 4
         if start_button.draw(screen.screen):
             flag = False
+        if menu_tab == 1:
+            aboutmess_button.draw(screen.screen)
         if menu_tab == 3:
             if football_button.draw(screen.screen):
                 object_dict[output["Ball"]].always_up = False

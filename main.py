@@ -9,6 +9,11 @@ import buttons
 import window
 import end
 
+# Define colors
+LIGHTGRAY = (153, 153, 153)
+WHITE = (255, 255, 255)
+GRAY = (82, 87, 93)
+
 #Initializing PyGame
 pygame.init()
 
@@ -25,7 +30,9 @@ window_height = size[1]
 
 pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
 
-show_load = False
+
+
+show_load = True
 output = {"IMode":False, "Ball":1, "Scene":0}
 
 play_pause = "play"
@@ -37,6 +44,7 @@ moon = pygame.image.load(f"graphics/{scaling}/moon/moon_{screen.screen_mode}.png
 playPAUSE = pygame.image.load(f"graphics/{scaling}/buttons/pause_{screen.screen_mode}.png").convert_alpha()
 Exit = pygame.image.load(f"graphics/{scaling}/buttons/exit_{screen.screen_mode}.png").convert_alpha()
 # midscene = pygame.image.load('graphics/Scenes/enter2.png').convert()
+
 
 
 #Ball class to store and control properties of body aka ball
@@ -116,8 +124,6 @@ back_dict = {0:10, 1:1, 2:1.6} #Stores value of acceleration due to gravitation 
 mousebutton = False
 esc = False
 
-#Font generation
-text_font = pygame.font.Font("graphics/font/gooddog-plain.regular.ttf", 40)
 
 if show_load:
     #Showing waiting screen
@@ -135,6 +141,26 @@ scale = scale_2/scale_1
 button1 = buttons.Button(1764*scale_2, 29*scale_2, playPAUSE, 0)
 button2 = buttons.Button(1778*scale_2, 997*scale_2, Exit, 0)
 bottomline = window_height-235*scale_2 #To set the collision point
+# Define slider properties
+slider_width = 150*scale_2
+slider_height = 10*scale_2
+slider_x = 1710*scale_2  # Default x coordinate
+slider_y = 170*scale_2   # Default y coordinate
+slider_value = 0.5
+#Font generation
+text_font = pygame.font.Font("graphics/font/gooddog-plain.regular.ttf", round(40*scale_2))
+
+# Define text properties
+text_x = 1685*scale_2 # Default x coordinate
+text_y = 200*scale_2   # Default y coordinate
+
+# Variables for tracking dragging state
+dragging = False
+offset = 0
+
+# Define font for displaying the value
+font = pygame.font.Font("graphics/font/AGENCYB.TTF", round(24*scale_2))
+
 if size[0]!=window_width:
     screen.screen_mode = 2
     screen.display_init()
@@ -145,9 +171,17 @@ if size[0]!=window_width:
         i.replot_x(scale)
     window_height = size[1]
     window_width = size[0]
+    text_x = 1685*scale_2 
+    text_y = 200*scale_2
+    slider_x = 1710*scale_2
+    slider_y = 170*scale_2 
+    font = pygame.font.Font("graphics/font/AGENCYB.TTF", round(24*scale_2))
+    slider_width = 150*scale_2
+    slider_height = 10*scale_2
 #Main loop
 run = True
 while run:
+    slider_value = round(back_dict[1],2)
     #To detect any event taking place
     for event in pygame.event.get():
         #Quit and close the window if Close Button(X) is pressed
@@ -155,6 +189,24 @@ while run:
             pygame.quit()
             exit()
         if play_pause == "play":
+            ball_pos = []
+            for i in Ball.balls:
+                ball_pos.append((i.x-150, i.x+150))
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if slider_x <= pygame.mouse.get_pos()[0] <= slider_x + slider_width and \
+                        slider_y <= pygame.mouse.get_pos()[1] <= slider_y + slider_height:
+                    dragging = True
+                    offset = pygame.mouse.get_pos()[0] - slider_x
+            if event.type == pygame.MOUSEBUTTONUP:
+                dragging = False
+            if event.type == pygame.MOUSEMOTION:
+                if dragging:
+                    mouse_x = pygame.mouse.get_pos()[0]
+                    relative_mouse_x = mouse_x - slider_x
+                    slider_value = round(0.5 + relative_mouse_x / slider_width * 1.5, 2)
+                    # Limit the slider value to the range 0.5 to 2.0
+                    slider_value = min(max(slider_value, 0.5), 2.0)
+                    back_dict[1] = slider_value
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_f:
                     if screen.screen_mode == 1:
@@ -179,7 +231,13 @@ while run:
                     window_width = size[0]
                     button1 = buttons.Button(1764*scale_2, 29*scale_2, playPAUSE, 0)
                     button2 = buttons.Button(1778*scale_2, 997*scale_2, Exit, 0)
-                
+                    text_x = 1685*scale_2 
+                    text_y = 200*scale_2
+                    slider_x = 1710*scale_2
+                    slider_y = 170*scale_2 
+                    font = pygame.font.Font("graphics/font/AGENCYB.TTF", round(24*scale_2))
+                    slider_width = 150*scale_2
+                    slider_height = 10*scale_2                
                 #Changing the y velocity of ball when Space key is pressed
                 for i in Ball.balls:
                     if event.key == pygame.K_SPACE and abs(i.v_y)<5 and (i.ball_rect.bottom > window_height-round(240*scale_2) and back == 0):
@@ -193,16 +251,18 @@ while run:
                 if event.key == pygame.K_a and len(Ball.balls)<4 : #Limits the maximum number of balls to 4
                     #Adding balls at different position depending on the scene
                     ready = False
-                    x = random.randint(50, window_width-50)
-                    if len(Ball.balls)==0:
+                    x = random.randint(50, window_width-150)
+                    if len(Ball.balls) == 0:
                         ready = True
                     while not ready:
                         for pos in ball_pos:
-                            if x not in range(pos[0], pos[1]):
-                                ready = True
-                            else:
+                            if x in range(pos[0], pos[1]):
                                 ready = False
-                                x = random.randint(50, window_width-50)
+                                x = random.randint(50, window_width-150)
+                                break
+                            else:
+                                ready = True
+
                     if back == 0:
                         ball = Ball(x, bottomline, 10, output["Ball"])
                     elif back == 1:
@@ -231,6 +291,7 @@ while run:
                 if event.key == pygame.K_RIGHT and back == 1:
                     if 0.8<=back_dict[back]<1.9: #Restricts the values to be between 0.8 and 1.5
                         back_dict[back]+=0.1
+
 
                 if event.key == pygame.K_LEFT and back == 1:
                     if 0.8<back_dict[back]<=2.0:
@@ -266,9 +327,6 @@ while run:
                         ball = Ball(event.pos[0], event.pos[1], 10, output["Ball"])
     
     if play_pause == "play":
-        ball_pos = []
-        for i in Ball.balls:
-            ball_pos.append((i.x-200, i.x+200))
 
         if interactive:
             if mousebutton and curr_ball != None:
@@ -308,6 +366,23 @@ while run:
             if back == 1:
                 screen.screen.blit(water, (0,0))
                 bottomline = window_height
+                
+                # Draw the slider background
+                pygame.draw.rect(screen.screen, LIGHTGRAY, (slider_x - 4, slider_y - 4, slider_width + 8, slider_height + 8))
+                pygame.draw.rect(screen.screen, GRAY, (slider_x, slider_y, slider_width, slider_height))
+
+                # Calculate the slider position based on the value
+                slider_position = slider_x + int((slider_value - 0.5) / 1.5 * (slider_width - slider_height))
+
+                # Draw the slider
+                pygame.draw.rect(screen.screen, WHITE , (slider_position, slider_y, slider_height, slider_height))
+
+                # Render the value text
+                value_text = font.render(f"DENSITY OF MEDIUM: {(slider_value)}", True, WHITE)
+
+                # Draw the value text
+                screen.screen.blit(value_text, (text_x, text_y))
+
             elif back == 0:
                 screen.screen.blit(ground, (0,0))
                 bottomline = window_height- round(235*scale_2)
