@@ -1,108 +1,117 @@
+# Importing modules
 import pygame
 from sys import exit 
 import random
 
-pygame.init()
-
+# Initialize the clock for controlling the frame rate
 clock = pygame.time.Clock()
 
-window_height = 793
-window_width = 1410
-screen = pygame.display.set_mode((window_width,window_height), pygame.RESIZABLE)
-screen.fill("Black")
-clock.tick(1)
+# List of loader values
+loader = [1, 9, 27, 5, 0] # Bar speed controller
 
-resize = [False, 0, 0]
-
-loader = [1, 9, 27, 5, 0]
-
-def load_screen(screen):
+def load_screen(screen, scaling):
     """
     Displays a series of loading screens before the game starts.
 
     Args:
         screen (pygame.Surface): The screen to display the loading screens on.
+        scaling (int): The scaling factor for adjusting image sizes.
 
     Returns:
         bool: True if the loading screens should continue, False if they should stop.
     """
-    global window_height
-    global window_width
-    global resize
-    surface  = pygame.image.load('graphics/Scenes/lo1.png').convert()
-        
-    if resize[0] == True:
-            surface= pygame.transform.scale_by(surface, resize[1]/resize[2])
-    screen.blit(surface, (0,0))
-    
-    clock.tick(5)
-    pygame.display.update()
+    # Load the background image for the loading screen
+    load_bg = pygame.image.load(f"graphics/{scaling}/load/loadBG_{screen.screen_mode}.png").convert()
 
+    # Fill the screen with black for 1 sec
+    screen.screen.fill("Black")
+    clock.tick(1)
+
+    # Blit the loading screen background onto the screen
+    screen.screen.blit(load_bg, (0,0))
+    pygame.display.update()
+    clock.tick(5)
+
+    # Check for events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        elif event.type == pygame.VIDEORESIZE:
-            resize[1]=event.h
-            resize[2]=window_height
-            window_height = event.h
-            window_width = event.w
-            resize[0] = not resize[0]
-
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_f:
+                # Switch screen mode (fullscreen or windowed) when "f" key is pressed
+                if screen.screen_mode == 1:
+                    screen.screen_mode = 2
+                else:
+                    screen.screen_mode = 1
+                screen.display_init()
+                load_bg = pygame.image.load(f"graphics/{scaling}/load/loadBG_{screen.screen_mode}.png").convert()
     return False
 
-bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
-barRect = bar.get_rect(topright = (0,0))
-def loading(screen):
+# Global variable for tracking the position of the loading bar
+x = 0
+
+def loading(screen, scaling):
     """
     Displays a loading animation on the screen.
 
     Args:
         screen (pygame.Surface): The screen to display the loading animation on.
+        scaling (int): The scaling factor for adjusting image sizes.
 
     Returns:
         bool: True if the loading animation should continue, False if it should stop.
     """
-    global window_height
+    global x
     global loader
-    bar = pygame.image.load('graphics/Scenes/lobar.png').convert_alpha()
-    surface  = pygame.image.load('graphics/Scenes/lo1.png').convert()
-    surface2  = pygame.image.load('graphics/Scenes/lo2.png').convert_alpha()
-    if resize[0] == True:
-        surface  = pygame.transform.scale_by(surface, resize[1]/resize[2])
-        surface2 = pygame.transform.scale_by(surface2, resize[1]/resize[2])
-        bar = pygame.transform.scale_by(bar, resize[1]/resize[2])
 
-    if barRect.right>1133:
-        loader[4]=loader[3]
-    elif barRect.right>378:
-        loader[4]=loader[2]
-    elif barRect.right>315:
-        loader[4]=loader[1]
-    elif barRect.right>126:
-        loader[4]=loader[0]
+    # Load the images for the loading animation
+    load_bg = pygame.image.load(f"graphics/{scaling}/load/loadBG_{screen.screen_mode}.png").convert()
+    loadbar = pygame.image.load(f"graphics/{scaling}/load/loadbar_{screen.screen_mode}.png").convert_alpha()
+    barRect = loadbar.get_rect(topright=(x, 0))
+    loadScreen = pygame.image.load(f"graphics/{scaling}/load/load_{screen.screen_mode}.png").convert_alpha()
+
+    # Update the loader value based on the position of the loading bar
+    if barRect.right > 1133:
+        loader[4] = loader[3]
+    elif barRect.right > 378:
+        loader[4] = loader[2]
+    elif barRect.right > 315:
+        loader[4] = loader[1]
+    elif barRect.right > 126:
+        loader[4] = loader[0]
     else:
-        loader[4] = 200
+        loader[4] = 100
 
-    if barRect.right<=1259:
-        barRect.right += 0.5*loader[4]
+    # Move the loading bar to the right
+    if barRect.right <= screen.screen.get_width():
+        barRect.right += loader[4]
+        x = barRect.right
     else:
         return False
 
+    # Check for events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        elif event.type == pygame.VIDEORESIZE:
-            resize[1]=event.h
-            resize[2]=window_height
-            window_height = event.h
-            window_width = event.w
-            resize[0] = not resize[0]
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_f:
+                # Switch screen mode (fullscreen or windowed) when "f" key is pressed
+                # All the assets are reloaded if the screen switches mode
+                if screen.screen_mode == 1:
+                    screen.screen_mode = 2
+                else:
+                    screen.screen_mode = 1
+                screen.display_init()
+                loadbar = pygame.image.load(f"graphics/{scaling}/load/loadbar_{screen.screen_mode}.png").convert_alpha()
+                loadScreen = pygame.image.load(f"graphics/{scaling}/load/load_{screen.screen_mode}.png").convert_alpha()
+                load_bg = pygame.image.load(f"graphics/{scaling}/load/loadBG_{screen.screen_mode}.png").convert()
+                screen.screen.blit(load_bg, (0, 0))
 
-    screen.blit(surface, (0,0))
-    screen.blit(bar, barRect.topleft)
-    screen.blit(surface2, (0,0))
+    # Blit the loading bar and screen onto the screen
+    screen.screen.blit(loadbar, barRect.topleft)
+    screen.screen.blit(loadScreen, (0, 0))
     pygame.display.update()
-    clock.tick(20)
+    clock.tick(100)
     return True
