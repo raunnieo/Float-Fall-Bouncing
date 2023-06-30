@@ -85,7 +85,7 @@ def loading(screen, scaling):
 
     # Move the loading bar to the right
     if barRect.right <= screen.screen.get_width():
-        barRect.right += loader[4] * 0.5
+        barRect.right += loader[4]
         x = barRect.right
     else:
         return False
@@ -113,5 +113,5 @@ def loading(screen, scaling):
     screen.screen.blit(loadbar, barRect.topleft)
     screen.screen.blit(loadScreen, (0, 0))
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(100)
     return True
