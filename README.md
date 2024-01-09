@@ -51,6 +51,5 @@ make them jump, and add or remove balls. There are three environments: ground, w
 has its own gravity setting. The project uses the Pygame library for graphics.
 
 ## Credits
-- Project by: Raunak Mandil
-- Version: 2.0
+- Project by Raunak Mandil and Kavyansh Dhakad
 
