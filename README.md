@@ -43,7 +43,6 @@ Float Fall Bouncing is a simple Physics Simulator that shows gravity's effect in
 - `end.py`: Contains the quit screen logic.
 - `window.py`: Handles the window configurations.
 - `graphics/`: Directory containing various graphics assets used in the project.
-- 
 ## Project Summary
 
 This project demonstrates bouncing balls in different environments. The user can control the movement of the balls,
