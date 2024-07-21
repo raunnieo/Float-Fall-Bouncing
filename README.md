@@ -1,32 +1,66 @@
 
 # Float Fall Bouncing
 
-Float Fall Bouncing is a simple Physics Simulator that shows gravity's effect in different mediums and environments built using the Pygame library. The objective of the project is to control the balls and observe the motion of balls on the ground or a medium.
+Float Fall Bouncing is a simple Physics Simulator that shows gravity's effects in different mediums and environments built using the Pygame library. The objective of the project is to control the balls and observe the motion of balls on the ground or in a medium.
+
+<img src = "images\1.png" alt = "Loading Screen" height = "50px">
+<img src = "images\3.png" alt = "Balls" height = "50px">
+<img src = "images\9.png" alt = "Exit" height = "50px">
+<img src = "images\8.png" alt = "Moon" height = "50px">
+<img src = "images\7.png" alt = "Water" height = "50px">
+<img src = "images\2.png" alt = "Ground" height = "50px">
+<img src = "images\4.png" alt = "Mode Menu" height = "50px">
+<img src = "images\5.png" alt = "Ball Menu" height = "50px">
+<img src = "images\6.png" alt = "Scene Menu" height = "50px">
+
 
 ## Features
 
-- Control multiple balls using mouse inputs.
-- Balls bounce off the ground with realistic physics.
-- Option to switch between different environments, such as "ground" and "water".
-- Option to switch between different object, such as "football" and "basketball".
-- Display velocity vectors for each ball.
-- Control the density of "Water" using arrow keys.
-- Drag, drop, and add balls in interactive mode.
+* Control multiple balls using mouse inputs.
+* Balls bounce off the ground with realistic physics.
+* Option to switch between different environments, such as "ground" and "water".
+* Option to switch between different object, such as "football" and "basketball".
+* Display velocity vectors for each ball.
+* Control the density of "Water" using arrow keys.
+* Drag, drop, and add balls in interactive mode.
 
 ## Prerequisites
 
-- Python 3.10
-- Pygame library
+* Python 3.12.2
+* Pygame
 
 ## Installation
 
-1. Install the required dependencies:
+### Clone the Repository
+1. Clone the repository:
 
-   pip install pygame
+   ```sh
+   git clone https://github.com/kvyns/Float-Fall-Bouncing.git
 
+   cd Float-Fall-Bouncing
+   ```
+   
+   (or)
+
+ - Download the zip file from the repository's [GitHub page](https://github.com/kvyns/Float-Fall-Bouncing).
+
+ - Extract the zip file to your desired location.
+
+ - Navigate to the extracted folder
+
+2. Install the required dependencies:
+
+   ```sh
+   pip install -r requirements.txt
+   ```
 ## Usage
 
-1. Run the script: main.py
+1. Run the file: main.py
+
+   ```python 
+   python main.py
+   ```
+   
 2. Follow the on-screen instructions to interact with the project.
 3. Use the spacebar to make the balls bounce.
 4. Press 'ESC' to open the menu screen.
@@ -36,19 +70,19 @@ Float Fall Bouncing is a simple Physics Simulator that shows gravity's effect in
 
 ## File Structure
 
-- `main.py`: The main script to run the project.
-- `menu.py`: Contains functions for the menu interface.
-- `loadScreen.py`: Contains functions for loading screens and displaying the loading animation.
-- `vectors.py`: Provides a function to display velocity vectors for the balls.
-- `end.py`: Contains the quit screen logic.
-- `window.py`: Handles the window configurations.
-- `graphics/`: Directory containing various graphics assets used in the project.
+* `main.py` : The main script to run the project.
+* `menu.py` : Contains functions for the menu interface.
+* `loadScreen.py` : Contains functions for loading screens and displaying the loading animation.
+* `vectors.py` : Provides a function to display velocity vectors for the balls.
+* `end.py` : Contains the quit screen logic.
+* `window.py` : Handles the window configurations.
+* `graphics/` : Directory containing various graphics assets used in the project.
+
 ## Project Summary
 
-This project demonstrates bouncing balls in different environments. The user can control the movement of the balls,
-make them jump, and add or remove balls. There are three environments: ground, water, and moon. Each environment
-has its own gravity setting. The project uses the Pygame library for graphics.
+This project demonstrates the motion of objects in different environments. The user can control the movement of the these objects (balls). Multiple balls can be added and removed in an environment. There are three environments: ground, water, and moon. Each environment has its own gravity setting. The project uses the Pygame library for graphics.
 
-## Credits
-- Project by [Raunak Mandil](https://github.com/raunnieo) and [Kavyansh Dhakad](https://github.com/kvyns)
+## Contributors
+* [Kavyansh Dhakad](https://github.com/kvyns)
+* [Raunak Mandil](https://github.com/raunnieo)
 
