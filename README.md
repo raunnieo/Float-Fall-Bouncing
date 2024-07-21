@@ -1,18 +1,11 @@
 
+<img src = "images\header.gif" alt = "Header">
+
 # Float Fall Bouncing
 
 Float Fall Bouncing is a simple Physics Simulator that shows gravity's effects in different mediums and environments built using the Pygame library. The objective of the project is to control the balls and observe the motion of balls on the ground or in a medium.
 
-<img src = "images\1.png" alt = "Loading Screen" height = "50px">
-<img src = "images\3.png" alt = "Balls" height = "50px">
-<img src = "images\9.png" alt = "Exit" height = "50px">
-<img src = "images\8.png" alt = "Moon" height = "50px">
-<img src = "images\7.png" alt = "Water" height = "50px">
-<img src = "images\2.png" alt = "Ground" height = "50px">
-<img src = "images\4.png" alt = "Mode Menu" height = "50px">
-<img src = "images\5.png" alt = "Ball Menu" height = "50px">
-<img src = "images\6.png" alt = "Scene Menu" height = "50px">
-
+<img src = "images\0.png" alt = "Screens">
 
 ## Features
 
@@ -83,6 +76,6 @@ Float Fall Bouncing is a simple Physics Simulator that shows gravity's effects i
 This project demonstrates the motion of objects in different environments. The user can control the movement of the these objects (balls). Multiple balls can be added and removed in an environment. There are three environments: ground, water, and moon. Each environment has its own gravity setting. The project uses the Pygame library for graphics.
 
 ## Contributors
-* [Kavyansh Dhakad](https://github.com/kvyns)
-* [Raunak Mandil](https://github.com/raunnieo)
+* [kvyns](https://github.com/kvyns)
+* [raunnieo](https://github.com/raunnieo)
 
