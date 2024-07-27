@@ -28,7 +28,7 @@ size = screen.screen.get_size()
 window_width = size[0]
 window_height = size[1]
 
-icon = pygame.image.load("graphics/ball/1.png") #Sets the icon of the window
+icon = pygame.image.load("graphics\icon\icon.png") #Sets the icon of the window
 pygame.display.set_caption('Float Fall Bouncing') #Sets the name of the window
 pygame.display.set_icon(icon)
 
