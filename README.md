@@ -1,6 +1,3 @@
-
-<img src = "images\header.gif" alt = "Header">
-
 # Float Fall Bouncing
 ![](https://github.com/raunnieo/Gravity-Simulator/blob/master/ffb_header.gif)
 
