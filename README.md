@@ -73,4 +73,4 @@ Float Fall Bouncing is a simple Physics Simulator that shows gravity's effects i
 
 This project demonstrates the motion of objects in different environments. The user can control the movement of these objects (balls). Multiple balls can be added and removed in an environment. There are three environments: ground, water, and moon. Each environment has its own gravity setting. The project uses the Pygame library for graphics.
 
-
+Special thanks to [Kavyansh](https://github.com/kvyns) for helping with the framework of this project.
